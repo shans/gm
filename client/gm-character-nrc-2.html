@@ -1,0 +1,105 @@
+<script src="/bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+
+<link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout.html">
+
+<link rel="import" href="/bower_components/paper-input/paper-input.html">
+<link rel="import" href="/bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="/bower_components/paper-card/paper-card.html">
+<link rel="import" href="/bower_components/paper-item/paper-item.html">
+<link rel="import" href="/bower_components/paper-menu/paper-menu.html">
+
+<link rel="import" href="/client/gm-class-card.html">
+<link rel="import" href="/client/gm-list.html">
+<link rel="import" href="/client/gm-race-card.html">
+<link rel="import" href="/client/gm-store.html">
+
+<script src="model.js"></script>
+
+<style>
+body {
+  background-color: rgb(90, 90, 200);
+}
+</style>
+
+<dom-module id="gm-character-nrc">
+  <template>
+    <style>
+      paper-card, gm-class-card, #race-cards {
+        width: 80%;
+        margin-bottom: 20px;
+        flex-grow: 0;
+      }
+
+      #cards {
+        @apply(--layout-vertical);
+        @apply(--layout-center);
+      }
+
+      #race-cards {
+        @apply(--layout-horizontal);
+        align-items: stretch;
+      }
+
+      #race-cards > * {
+        flex: 1 0 auto;
+      }
+
+      #sub-race-card {
+        padding-left: 20px;
+      }
+
+      gm-race-card {
+        display: flex;
+      }
+
+      #menu-align {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+      }
+    </style>
+    <div id='cards'>
+      <iron-ajax handle-as="json" on-response="modelLoaded" url="/client/nrc-model.json" auto></iron-ajax>
+      <paper-card heading="Character Information">
+        <div class='card-content'>
+          <paper-input label="Name" value="{{data.result._shadow.name}}"></paper-input>
+          <div id='menu-align'>
+            <div>
+              <gm-list label="Race" input="{{data.race}}" output="{{data.result.race}}">
+              </gm-list>
+              <gm-list label="Sub Race" input="{{data.subrace}}" output="{{data.result.subrace}}">
+              </gm-list>
+              <gm-list label="Class" input="{{data.clazz}}" output="{{data.result.clazz}}">
+              </gm-list>
+              <gm-store id='next' label="Next" show-state stored-value="{{data.result._shadow}}"></gm-store>
+            </div>
+          </div>
+        </div>
+      </paper-card>
+    <div id='race-cards'>
+      <gm-race-card id='race-card' race="{{data.result.race}}" race-info="{{data.raceInfo}}"
+                                   output="{{data.result._shadow.attributes}}"></gm-race-card>
+      <gm-race-card id='sub-race-card' race="{{data.result.subrace}}" race-info="{{data.subraceInfo}}"></gm-race-card>
+    </div>
+    <gm-class-card id='class-card' clazz="{{data.result.clazz}}" clazz-info="{{data.clazzInfo}}"></gm-class-card>
+  </div>
+  </template>
+  <script>
+    Polymer({
+      is: "gm-character-nrc",
+      properties: {
+        data: {type: Object}
+      },
+      observers: ["subraceInfoChanged(data.subraceInfo)"],
+      modelLoaded: function(e) {
+        this.data = new Model(e.target.lastResponse);
+        this.data.setOwner(this);
+      },
+      subraceInfoChanged: function(info) {
+        this.$['sub-race-card'].hidden = !info;
+      }
+    });
+  </script>
+</dom-module>
+
+<gm-character-nrc></gm-character-nrc>

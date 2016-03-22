@@ -1,0 +1,32 @@
+<script src="/bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+
+<link rel="import" href="/bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="/bower_components/paper-item/paper-item.html">
+<link rel="import" href="/bower_components/paper-menu/paper-menu.html">
+
+<dom-module id='gm-list'>
+  <template>
+    <paper-dropdown-menu id='menu' label="{{label}}" selected-item-label={{output}} hidden>
+      <paper-menu class="dropdown-content" id='model'>
+        <template is="dom-repeat" items="{{input}}">
+          <paper-item>{{item}}</paper-item>
+        </template>
+      </paper-menu>
+    </paper-dropdown-menu>
+  </template>
+  <script>
+  Polymer({
+    is: 'gm-list',
+    properties: {
+      'label': String,
+      output: {type: String, notify: true, value: ''},
+      input: {type: Object, observer: "inputChanged"}
+    },
+    inputChanged: function(value) {
+      this.$.menu.hidden = (value == undefined || value.length == 0);
+      if (value == undefined || value.length == 0)
+        this.$.model.select(null);
+    }
+  });
+  </script>
+</dom-module>

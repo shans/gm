@@ -1,0 +1,48 @@
+<script src="/bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+
+<link rel="import" href="/bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="/bower_components/paper-item/paper-item.html">
+<link rel="import" href="/bower_components/paper-menu/paper-menu.html">
+
+<dom-module id="my-test">
+  <template>
+    <paper-dropdown-menu label="First" selected-item-label={{sel1}}>
+      <paper-menu class="dropdown-content">
+        <paper-item>A</paper-item>
+        <paper-item>B</paper-item>
+      </paper-menu>
+    </paper-dropdown-menu>
+    <paper-dropdown-menu label="Second">
+      <paper-menu class="dropdown-content" id='list2'>
+        <template is="dom-repeat" items="{{sel2List}}">
+          <paper-item>{{item}}</paper-item>
+        </template>
+      </paper-menu>
+    </paper-dropdown-menu>
+  </template>
+  <script>
+    Polymer({
+      is: 'my-test',
+      properties: {
+        sel1: { type: String, observer: 'selChanged' },
+        sel2List: { type: Array, value: function() { return []; } }
+      },
+      selChanged: function(e) {
+        if (this.sel1 !== undefined) {
+          this.set('sel2List', []);
+          if (this.sel1 == 'A') {
+            this.push('sel2List', 'C');
+            this.push('sel2List', 'D');
+          } else { 
+            this.push('sel2List', 'E');
+            this.push('sel2List', 'F');
+          }
+          debugger;
+          this.$.list2.selected = null;
+        }
+      },
+    });
+  </script>
+</dom-module>
+
+<my-test></my-test>

@@ -1,0 +1,161 @@
+{
+  "rules": {
+    "initial": ["race", "clazz"],
+    "race": ["subrace", "raceInfo"],
+    "subrace": "subraceInfo",
+    "clazz": "clazzInfo"
+  },
+  "menus": {
+    "race": ["Dragonborn","Dwarf","Elf","Gnome","Half-Elf","Half-Orc","Halfling",
+             "Human","Tiefling"],
+    "subrace": {
+      "Dwarf": ["Hill","Mountain"],
+      "Elf": ["High","Wood","Dark"],
+      "Gnome": ["Forest","Rock"],
+      "Halfling": ["Lightfoot","Stout"]
+    },
+    "clazz": ["Barbarian","Bard","Cleric","Druid","Fighter","Monk","Paladin",
+              "Ranger","Rogue","Sorcerer","Warlock","Wizard"],
+    "raceInfo": {
+      "Dragonborn": {
+        "Ability": [ {"stat": "Strength", "value": "+2"},
+                     {"stat": "Charisma", "value": "+1"} ],
+        "Size": "Medium",
+        "Speed": "30 feet"
+      },
+      "Dwarf": {
+        "Ability": [ {"stat": "Constitution", "value": "+2"} ],
+        "Size": "Medium",
+        "Speed": "25 feet"
+      },
+      "Elf": {
+        "Ability": [ {"stat": "Dexterity", "value": "+2"} ],
+        "Size": "Medium",
+        "Speed": "30 feet"
+      },
+      "Gnome": {
+        "Ability": [ {"stat": "Intelligence", "value": "+2"} ],
+        "Size": "Small",
+        "Speed": "25 feet"
+      },
+      "Half-Elf": {
+        "Ability": [ {"stat": "Charisma", "value": "+2"} ],
+        "AbilityChoice": {
+          "labels": ["+1", "+1"],
+          "choices": ["Strength", "Constitution", "Dexterity",
+                      "Intelligence", "Wisdom", "Charisma"]
+        },
+        "Size": "Medium",
+        "Speed": "30 feet"
+      },
+      "Half-Orc": {
+        "Ability": [ {"stat": "Strength", "value": "+2"},
+                     {"stat": "Charisma", "value": "+1" } ],
+        "Size": "Medium",
+        "Speed": "30 feet"
+      },
+      "Halfling": {
+        "Ability": [ {"stat": "Dexterity", "value": "+2"} ],
+        "Size": "Small",
+        "Speed": "25 feet"
+      },
+      "Human": {
+        "Ability": [ {"stat":"Strength", "value": "+1"},
+                     {"stat": "Constitution", "value": "+1"},
+                     {"stat": "Dexterity", "value": "+1"},
+                     {"stat": "Intelligence", "value": "+1"},
+                     {"stat": "Wisdom", "value": "+1"},
+                     {"stat": "Charisma", "value": "+1" } ],
+        "Size": "Medium",
+        "Speed": "30 feet"
+      },
+      "Tiefling": {
+        "Ability": [ {"stat":"Intelligence", "value": "+1"},
+                     {"stat":"Charisma", "value": "+2" } ],
+        "Size": "Medium",
+        "Speed": "30 feet"
+      }
+    },
+    "subraceInfo": {
+      "Hill": {
+        "Ability": [ {"stat":"Wisdom", "value": "+1" } ]
+      },
+      "Mountain": {
+        "Ability": [ {"stat": "Strength", "value": "+2" } ]
+      },
+      "High": {
+        "Ability": [ {"stat": "Intelligence", "value": "+1"} ]
+      },
+      "Wood": {
+        "Ability": [ {"stat": "Wisdom", "value": "+1" } ],
+        "Speed": "35 feet"
+      },
+      "Dark": {
+        "Ability": [ {"stat": "Charisma", "value": "+1" } ]
+      },
+      "Forest": {
+        "Ability": [ {"stat": "Dexterity", "value": "+1"} ]
+      },
+      "Rock": {
+        "Ability": [ {"stat": "Constitution", "value": "+1" } ]
+      },
+      "Lightfoot": {
+        "Ability": [ {"stat": "Charisma", "value": "+1"} ]
+      },
+      "Stout": {
+        "Ability": [ {"stat": "Constitution", "value": "+1" } ]
+      }
+    },
+    "clazzInfo": {
+      "Barbarian": {
+        "HitDice": "1d12",
+        "PrimaryAbility": "Strength"
+      },
+      "Bard": {
+        "HitDice": "1d8",
+        "PrimaryAbility": "Charisma"
+      },
+      "Cleric": {
+        "HitDice": "1d8",
+        "PrimaryAbility": "Wisdom"
+      },
+      "Druid": {
+        "HitDice": "1d8",
+        "PrimaryAbility": "Wisdom"
+      },
+      "Fighter": {
+        "HitDice": "1d10",
+        "PrimaryAbility": "Strength or Dexterity",
+        "Note": "Strength is your primary ability if you want to specialize in melee, Dexterity if you want to specialize in ranged weapons."
+      },
+      "Monk": {
+        "HitDice": "1d8",
+        "PrimaryAbility": "Dexterity & Wisdom"
+      },
+      "Paladin": {
+        "HitDice": "1d10",
+        "PrimaryAbility": "Strength & Charisma"
+      },
+      "Ranger": {
+        "HitDice": "1d10",
+        "PrimaryAbility": "Dexterity & Wisdom"
+      },
+      "Rogue": {
+        "HitDice": "1d8",
+        "PrimaryAbility": "Dexterity"
+      },
+      "Sorcerer": {
+        "HitDice": "1d6",
+        "PrimaryAbility": "Charisma"
+      },
+      "Warlock": {
+        "HitDice": "1d8",
+        "PrimaryAbility ": "Charisma"
+      },
+      "Wizard": {
+        "HitDice": "1d6",
+        "PrimaryAbility": "Intelligence"
+      }
+    }
+  }
+}

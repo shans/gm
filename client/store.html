@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+
+<script src="/bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+
+<link rel="import" href="/bower_components/paper-input/paper-input.html">
+
+<link rel="import" href="/client/gm-store.html">
+
+<dom-module id="gm-store-form">
+  <template>
+    <paper-input label="Some random input value" id="input" value="{{value.Message}}"></paper-input>
+    <gm-store value="{{value}}"></gm-store>
+  </template>
+
+  <script>
+
+    Polymer({
+      is: 'gm-store-form',
+      properties: {
+        value: {
+          type: Object,
+          value: function() {
+            return {Message: ''};
+          },
+          notify: true
+        },
+      }
+    });
+  </script>
+
+</dom-module>
+
+<gm-store-form></gm-store-form>

@@ -1,0 +1,196 @@
+<script src="/bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+
+<link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout.html">
+
+<link rel="import" href="/bower_components/paper-input/paper-input.html">
+<link rel="import" href="/bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="/bower_components/paper-card/paper-card.html">
+<link rel="import" href="/bower_components/paper-item/paper-item.html">
+<link rel="import" href="/bower_components/paper-menu/paper-menu.html">
+
+<link rel="import" href="/client/gm-class-card.html">
+<link rel="import" href="/client/gm-race-card.html">
+<link rel="import" href="/client/gm-store.html">
+
+<style>
+body {
+  background-color: rgb(90, 90, 200);
+}
+</style>
+
+<dom-module id="gm-character-nrc">
+  <template>
+    <style>
+      paper-card, gm-class-card, #race-cards {
+        width: 80%;
+        margin-bottom: 20px;
+        flex-grow: 0;
+      }
+
+      #cards {
+        @apply(--layout-vertical);
+        @apply(--layout-center);
+      }
+
+      #race-cards {
+        @apply(--layout-horizontal);
+        align-items: stretch;
+      }
+
+      #race-cards > * {
+        flex: 1 0 auto;
+      }
+
+      #sub-race-card {
+        padding-left: 20px;
+      }
+
+      gm-race-card {
+        display: flex;
+      }
+
+      #menu-align {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+      }
+    </style>
+    <div id='cards'>
+      <paper-card heading="Character Information">
+        <div class='card-content'>
+          <paper-input label="Name"></paper-input>
+          <div id='menu-align'>
+            <div>
+            <paper-dropdown-menu label="Race" selected-item-label={{data.race}}>
+              <paper-menu class="dropdown-content">
+                <paper-item>Dwarf</paper-item>
+                <paper-item>Elf</paper-item>
+                <paper-item>Halfling</paper-item>
+                <paper-item>Human</paper-item>
+                <paper-item>Dragonborn</paper-item>
+                <paper-item>Gnome</paper-item>
+                <paper-item>Half-Elf</paper-item>
+                <paper-item>Half-Orc</paper-item>
+                <paper-item>Tiefling</paper-item>
+              </paper-menu>
+              <iron-ajax handle-as="json" on-response="raceChanged" url="{{raceURL(data.race)}}" auto></iron-ajax>
+            </paper-dropdown-menu>
+            <paper-dropdown-menu id="subrace" label="Sub Race" selected-item-label={{data.subrace}} hidden>
+              <paper-menu class="dropdown-content" id="subrace-list">
+                <template is="dom-repeat" items="{{subraceList}}">
+                  <paper-item>{{item.name}}</paper-item>
+                </template>
+              </paper-menu>
+            </paper-dropdown-menu>
+            <paper-dropdown-menu label="Class" selected-item-label={{data.clazz}}>
+              <paper-menu class="dropdown-content">
+                <paper-item>Barbarian</paper-item>
+                <paper-item>Bard</paper-item>
+                <paper-item>Cleric</paper-item>
+                <paper-item>Druid</paper-item>
+                <paper-item>Fighter</paper-item>
+                <paper-item>Monk</paper-item>
+                <paper-item>Paladin</paper-item>
+                <paper-item>Ranger</paper-item>
+                <paper-item>Rogue</paper-item>
+                <paper-item>Sorcerer</paper-item>
+                <paper-item>Warlock</paper-item>
+                <paper-item>Wizard</paper-item>
+              </paper-menu>
+              <iron-ajax handle-as="json" on-response="classChanged" url="{{classURL(data.clazz)}}" auto></iron-ajax>
+            </paper-dropdown-menu>
+            </div>
+            <gm-store id='next' label="Next" disabled show-state stored-value="{{data}}"></gm-store>
+          </div>
+        </div>
+      </paper-card>
+      <div id='race-cards'>
+        <gm-race-card id='race-card' race="{{data.race}}" race-info="{{raceInfo}}" hidden></gm-race-card>
+        <gm-race-card id='sub-race-card' race="{{data.subrace}}" race-info="{{subraceInfo}}" hidden></gm-race-card>
+      </div>
+      <gm-class-card id='class-card' clazz="{{data.clazz}}" clazz-info="{{clazzInfo}}" hidden></gm-class-card>
+    </div>
+  </template>
+  <script>
+    Polymer({
+      is: 'gm-character-nrc',
+      properties: {
+        data: { type: Object, value: function() { return {foo: 'bar'}; }},
+        /*
+          race: { type: String },
+          clazz: {type: String },
+          subrace: { type: String, observer: 'subraceChanged' },
+        */
+        raceInfo: { type: Object },
+        clazzInfo: { type: Object },
+        subraceInfo: { type: Object },
+        subraceList: { type: Array, value: function() { return []; } }
+      },
+      observers: [ "subraceChanged(data.subrace)" ],
+      raceURL(race) { if (race == undefined) return undefined; return "/client/" + race + ".json"; },
+      classURL(clazz) { if (clazz == undefined) return undefined; return "/client/" + clazz + ".json"; },
+      statHasChange(info, stat) {
+        if (info !== null && info.Ability[stat] !== undefined)
+          return "stat-visible";
+        return "stat-hidden";
+      },
+      raceChanged: function(e) {
+        if (this.data.race !== undefined) {
+          this.raceInfo = e.target.lastResponse;
+          this.$["race-card"].hidden = false;
+          if (this.raceInfo.Subrace !== undefined && this.raceInfo.Subrace !== "") {
+            this.$.subrace.hidden = false;
+            var list = this.$["subrace-list"];
+            var needsSelection = this.subraceList.length > 0;
+            this.set('subraceList', []);
+            for (key in this.raceInfo.Subrace) {
+              this.push('subraceList', {name: key, info: this.raceInfo.Subrace[key]});
+            }
+            if (needsSelection) {
+              if (this.$['subrace-list'].selected !== undefined) {
+                this.$['subrace-list'].select(null);
+                this.$["sub-race-card"].hidden = true;
+              }
+            }
+          } else {
+            this.set("data.subrace", undefined);
+            this.subraceInfo = null;
+            this.set('subraceList', []);
+            this.$['subrace-list'].select(null);
+            this.$.subrace.hidden = true;
+          }
+        }
+        this.maybeEnableNext();
+      },
+      subraceChanged: function() {
+        if (this.data.subrace == undefined || this.data.subrace == '') {
+          this.$["sub-race-card"].hidden = true;
+          this.maybeEnableNext();
+          return;
+        }
+        this.$["sub-race-card"].hidden = false;
+        this.subraceInfo = this.raceInfo.Subrace[this.data.subrace];
+        this.maybeEnableNext();
+      },
+      classChanged: function(e) {
+        if (this.data.clazz !== undefined) {
+          this.clazzInfo = e.target.lastResponse;
+          this.$["class-card"].hidden = false;
+          // WHY DO I NEED TO DO THIS
+          // this.$["class-card"].clazzInfo = this.clazzInfo;
+        }
+        this.maybeEnableNext();
+      },
+      maybeEnableNext: function() {
+        if (this.data.clazz !== undefined && this.data.race !== undefined &&
+            (this.subraceList.length == 0 || (this.data.subrace !== undefined && this.data.subrace !== ""))) {
+          this.$.next.disabled = false;
+        } else {
+          this.$.next.disabled = true;
+        }
+      }
+    });
+  </script>
+</dom-module>
+
+<gm-character-nrc></gm-character-nrc>

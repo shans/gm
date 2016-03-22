@@ -1,0 +1,66 @@
+<script src="/bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+
+<link rel="import" href="/bower_components/paper-button/paper-button.html">
+
+<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="gm-store">
+  <template>
+    <iron-ajax id="ajaxOut" content-type="application/json" method="POST" url="/NameRaceClassStore" body=[[storedValue]] handle-as="text" on-response="dataSent"></iron-ajax>
+    <iron-ajax id="ajaxIn" handle-as="json" on-response="gotData" url="/NameRaceClassLoad" auto></iron-ajax>
+    <paper-button raised on-click="sendData" disabled={{disabled}}>{{label}}</paper-button>
+    <template is="dom-if" if="{{showState}}">
+      <template is="dom-if" if="{{isSaved}}">Data up-to-date</template>
+      <template is="dom-if" if="{{isError}}">Error storing data!</template>
+      <template is="dom-if" if="{{isUnsynced(isSaved, isError)}}">Data needs synchronization</template>
+    </template>
+  </template>
+
+  <script>
+
+    Polymer({
+      is: 'gm-store',
+      properties: {
+        storedValue: {type: Object, value: function() { return {}; }, notify: true },
+        isSaved: {type: Boolean, value: true},
+        isError: {type: Boolean, value: false},
+        showState: {type: Boolean, value: false},
+        label: {type: String, value: "Store Value"},
+        disabled: {type: Boolean, value: false}
+      },
+      observers: [
+        'valueChanged(storedValue.*)'
+      ],
+      isUnsynced: function(saved, err) { return !(saved || err); },
+      sendData: function() {
+        console.log('sending ' + JSON.stringify(this.storedValue));
+        this.$.ajaxOut.generateRequest();
+      },
+      dataSent: function(e) {
+        if (e.target.lastResponse == "OK") {
+          this.isSaved = true;
+          this.isError = false;
+        } else {
+          console.log(e.target.lastResponse);
+          this.isSaved = false;
+          this.isError = true;
+        }
+      },
+      gotData: function(e) {
+        if (e.target.lastResponse == "OK") {
+          this.storedValue = e.target.lastResponse;
+        }
+      },
+      valueChanged: function(e) {
+        console.log(e);
+        if (e.base == null)
+          debugger;
+        if (e.path !== 'storedValue') {
+          this.isSaved = false;
+          this.isError = false;
+        }
+      }
+    });
+  </script>
+
+</dom-module>

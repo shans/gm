@@ -1,0 +1,70 @@
+<script src="/bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+
+<link rel="import" href="/bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="/bower_components/paper-card/paper-card.html">
+<link rel="import" href="/bower_components/paper-input/paper-input.html">
+<link rel="import" href="/bower_components/paper-item/paper-item.html">
+<link rel="import" href="/bower_components/paper-menu/paper-menu.html">
+
+<link rel="import" href="/client/gm-choose-n.html">
+<link rel="import" href="/client/gm-list.html">
+
+<dom-module id="gm-race-card">
+  <template>
+    <style>
+      .stat-hidden {
+        display: none;
+      }
+
+      .stat-visible {
+        font-weight: bold;
+      }
+
+      .stat-visible span:not(#item) {
+        font-weight: normal;
+      }
+
+      paper-card {
+        width: 100%;
+      }
+
+      :host {
+        --paper-dropdown-menu-button: { padding: 0px; };
+      }
+    </style>
+    <paper-card heading="{{race}}" id="race-card">
+      <div class='card-content'>
+        <h3>Stats changes</h3>
+        <ul id='list'>
+          <template is="dom-repeat" items={{raceInfo.Ability}}>
+            <li class="stat-visible"><span id='item'>{{item.stat}}</span>: <span>{{item.value}}</span></li>
+          </template>
+        </ul>
+        <gm-choose-n labels="{{raceInfo.AbilityChoice.labels}}"
+                     input="{{raceInfo.AbilityChoice.choices}}"
+                     output="{{output}}"></gm-choose-n>
+        <div class$="{{isVisible(raceInfo, 'Size')}}">Size: <span>{{raceInfo.Size}}</span></div>
+        <div class$="{{isVisible(raceInfo, 'Speed')}}">Speed: <span>{{raceInfo.Speed}}</span></div>
+      </div>
+    </paper-card>
+  </template>
+  <script>
+    Polymer({
+      is: 'gm-race-card',
+      properties: {
+        race: String,
+        raceInfo: { type: Object, notify: true, value: null },
+        output: {type: Object, notify: true}
+      },
+      observers: [ "raceInfoChanged(raceInfo)" ],
+      isVisible(info, field) {
+        if (info !== null && info[field] !== undefined)
+          return "stat-visible";
+        return "stat-hidden";
+      },
+      raceInfoChanged: function() {
+        this.$['race-card'].hidden = !this.raceInfo;
+      }
+    });
+  </script>
+</dom-module>

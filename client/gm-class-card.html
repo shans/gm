@@ -1,0 +1,51 @@
+<script src="/bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+
+<link rel="import" href="/bower_components/paper-card/paper-card.html">
+
+<dom-module id="gm-class-card">
+  <template>
+    <style>
+     paper-card {
+        width: 100%;
+      }
+
+      .stat {
+        font-weight: bold;
+      }
+
+      .stat span {
+        font-weight: normal;
+      }
+
+      #note {
+        margin-top: 25px;
+        font-style: italic;
+      }
+
+    </style>
+    <paper-card heading="{{clazz}}" id="class-card">
+      <div class='card-content'>
+       <div class='stat'>Hit Dice: <span><span>{{clazzInfo.HitDice}}</span> per <span>{{clazz}}</span> level</span></div>
+        <div class='stat'>Primary Ability: <span>{{clazzInfo.PrimaryAbility}}</span></div>
+        <div id='note' hidden>Note: <span>{{clazzInfo.Note}}</span></div>
+      </div>
+    </paper-card>
+  </template>
+  <script>
+    Polymer({
+      is: 'gm-class-card',
+      properties: {
+        clazz: String,
+        clazzInfo: { type: Object, notify: true, value: null }
+      },
+      observers: [ "clazzInfoChanged(clazzInfo.*)" ],
+      clazzInfoChanged: function() {
+        this.$['class-card'].hidden = !this.clazzInfo;
+        if (this.clazzInfo != undefined && this.clazzInfo.Note != undefined)
+          this.$.note.hidden = false;
+        else
+          this.$.note.hidden = true;
+      }
+    });
+  </script>
+</dom-module>

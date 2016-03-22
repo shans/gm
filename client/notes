@@ -1,0 +1,16 @@
+model.json files contain data that drives model.js models.
+
+There's a generic model.js which knows some basic rules, but you
+can also extend it to produce models with extra rules.
+
+Anything that gets written into a model's result object will be serialized
+and saved. As part of this, if a model.json uses:
+
+rules: {
+  "foo": "SomeModel(bar)"
+}
+
+then:
+  (1) bar will be fed into SomeModel; and
+  (2) the outer model will track SomeModel's results object for serialization
+      purposes.

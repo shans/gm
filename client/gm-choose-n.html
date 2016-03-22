@@ -1,0 +1,68 @@
+<script src="/bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+
+<link rel="import" href="/bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="/bower_components/paper-item/paper-item.html">
+<link rel="import" href="/bower_components/paper-menu/paper-menu.html">
+
+<dom-module id='gm-choose-n'>
+  <template>
+    <ul>
+    <template is='dom-repeat' items='{{output}}' id="control">
+      <li>
+      <paper-dropdown-menu label="{{label}}" selected-item-label={{item}}>
+        <paper-menu class="dropdown-content" id='model'>
+          <template class="lists" is="dom-repeat" items="{{input}}" filter="{{preventDuplicates(index, output)}}">
+            <paper-item>{{item}}</paper-item>
+          </template>
+        </paper-menu>
+      </paper-dropdown-menu>
+      <span>{{labelFor(index)}}</span></li>
+    </template>
+    </ul>
+  </template>
+  <script>
+  Polymer({
+    is: 'gm-choose-n',
+    properties: {
+      labels: {type: Number, observer: "labelsChanged"},
+      input: {type: Object, value: function() { return []; }},
+      output: {type: Object, value: function() { return []; }, notify: true}
+    },
+    observers: ["outputChanged(output.*)"],
+    labelFor(idx) {
+      return this.labels[idx]
+    },
+    labelsChanged: function() {
+      var arr = [];
+      this.hidden = (this.labels == undefined || this.labels.length == 0);
+      if (this.labels == undefined) {
+        this.set("output", []);
+        return;
+      }
+
+      for (var i = 0; i < this.labels.length; i++) {
+        arr.push(undefined);
+      }
+      this.set("output", arr);
+
+    },
+    outputChanged: function(output) {
+      var templates = this.querySelectorAll(".lists");
+      for (var i = 0; i < templates.length; i++) {
+        templates[i].render();
+      }
+    },
+    range: function(n) {
+      var arr = [];
+      for (var i = 0; i < n; i++)
+        arr.push(i);
+      return arr;
+    },
+    preventDuplicates: function(index, output) {
+      return function(item) {
+        var idx = output.indexOf(item);
+        return idx == -1 || idx == index; }
+    }
+  })
+  </script>
+</dom-module>
