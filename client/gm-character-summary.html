@@ -1,0 +1,18 @@
+<script src="/bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="/bower_components/polymer/polymer.html">
+<dom-module id='gm-character-summary'>
+  <template>
+    <span>{{data.name}} (a {{raceInfo(data)}} {{data.clazz}})</span>
+  </template>
+  <script>
+  Polymer({
+    is: 'gm-character-summary',
+    properties: {
+      data: {type: Object, value: function() { return {} }}
+    },
+    raceInfo(data) {
+      return data.subrace? data.subrace + ' ' + data.race : data.race;
+    }
+  });
+  </script>
+</dom-module>

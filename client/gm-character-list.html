@@ -1,0 +1,26 @@
+<script src="/bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+
+<link rel="import" href="/client/gm-character-summary.html">
+<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id='gm-character-list'>
+  <template>
+    <iron-ajax handle-as="json" last-response="{{list}}" url="/NameRaceClassList" auto></iron-ajax>
+    <ul>
+    <template is='dom-repeat' items='{{list}}'>
+      <li><gm-character-summary data='{{item}}'></gm-character-summary></li>
+    </template>
+    </ul>
+  </template>
+  <script>
+  Polymer({
+    is: 'gm-character-list',
+    properties: {
+      list: { type: Object, value: function() { return []; }}
+    }
+  });
+  </script>
+</dom-module>
+
+<gm-character-list></gm-character-list> 
+

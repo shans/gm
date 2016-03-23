@@ -35,7 +35,7 @@ class RetrieveList(webapp2.RequestHandler):
         results = NameRaceClass.list(parent);
         response = []
         for result in results:
-            response.append({'name': result.key.id()})
+            response.append({'name': result.key.id(), 'subrace': result.subrace, 'race': result.race, 'clazz': result.clazz})
         self.response.write(json.dumps(response))
 
 class LoadPage(webapp2.RequestHandler):
